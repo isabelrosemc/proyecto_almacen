@@ -8,6 +8,7 @@ import com.almacen.ms_productos.model.Producto;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     
+    // Metodo custom
     List<Producto> findByIdCategoria(Long idCategoria);
 
 }
