@@ -20,6 +20,7 @@ public class Cliente {
 
     private String nombre;
 
+    @Column(nullable = false, unique = true)
     private String apodo;
 
     private String telefono;
