@@ -27,7 +27,7 @@ public class Producto {
     @Column(nullable = false)
     private String descripcion;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long idCategoria;   // relacion con ms-categoria
 
     @Column(nullable = false)

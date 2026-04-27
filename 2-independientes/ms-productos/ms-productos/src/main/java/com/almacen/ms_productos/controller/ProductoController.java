@@ -50,4 +50,9 @@ public class ProductoController {
     public List<Producto> listarPorCategoria(@PathVariable Long idCategoria) {
         return productoService.listarPorCategoria(idCategoria);
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "funciona";
+    }
 }
