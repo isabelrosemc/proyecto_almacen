@@ -39,5 +39,4 @@ public class Producto {
     @Column(nullable = false)
     private String contenidoNeto; //    500 ml, 5 litros, gramos etc
 
-
 }
