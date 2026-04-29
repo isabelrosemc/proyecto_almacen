@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,19 +20,22 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String nombre;
 
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String apodo;
 
+    @NotBlank
     private String telefono;
 
+    @Min(0)
     @Column(nullable = false)
-    private Double deudaActual;
+    private Long deudaActual;
 
+    @Min(0)
     @Column(nullable = false)
-    private Double limiteCredito; //cuanto le damos de margen para fiar
-
-
+    private Long limiteCredito; //cuanto le damos de margen para fiar
 
 }

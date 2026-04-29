@@ -16,28 +16,58 @@ public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public Producto crear(Producto producto){
-        // Validaciones
+    // CREAR
+    public Producto crear(Producto producto) {
+
+        // validar nombre duplicado (opcional pero útil)
+        if (productoRepository.findAll()
+                .stream()
+                .anyMatch(p -> p.getNombre().equalsIgnoreCase(producto.getNombre())
+                        && p.getMarca().equalsIgnoreCase(producto.getMarca()))) {
+            throw new RuntimeException("Ya existe un producto con ese nombre y marca");
+        }
+
+        // validar precio
+        if (producto.getPrecioVenta() <= 0) {
+            throw new RuntimeException("El precio de venta debe ser mayor a 0");
+        }
+
+        // validar categoría
+        if (producto.getIdCategoria() == null || producto.getIdCategoria() <= 0) {
+            throw new RuntimeException("La categoría es obligatoria");
+        }
+
         return productoRepository.save(producto);
     }
 
-    // CRUD: Listar todos los productos
-    public List<Producto> listar(){             // Lista todo
+    // LISTAR
+    public List<Producto> listar() {
         return productoRepository.findAll();
     }
 
-    // CRUD: Buscar por Id (por id)
+    // OBTENER POR ID
     public Producto obtener(Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No existe producto con tal id"));
     }
 
-    // CRUD: Actualizar datos
+    // ACTUALIZAR
     public Producto actualizar(Long id, Producto productoActualizado) {
-        Producto existe = productoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("No existe producto con tal id"));
 
-        // actualizas solo los campos necesarios
+        Producto existe = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No existe producto con tal id"));
+
+        // validar precio
+        if (productoActualizado.getPrecioVenta() <= 0) {
+            throw new RuntimeException("El precio de venta debe ser mayor a 0");
+        }
+
+        // validar categoría
+        if (productoActualizado.getIdCategoria() == null || productoActualizado.getIdCategoria() <= 0) {
+            throw new RuntimeException("La categoría es obligatoria");
+        }
+
+        // actualizar campos
         existe.setNombre(productoActualizado.getNombre());
         existe.setMarca(productoActualizado.getMarca());
         existe.setDescripcion(productoActualizado.getDescripcion());
@@ -49,15 +79,17 @@ public class ProductoService {
         return productoRepository.save(existe);
     }
 
-    // CRUD: Eliminar
+    // ELIMINAR
     public void eliminar(Long id) {
-    Producto existe = productoRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("No existe producto con tal id"));
 
-    productoRepository.delete(existe);
+        Producto existe = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No existe producto con tal id"));
+
+        productoRepository.delete(existe);
     }
 
+    // LISTAR POR CATEGORÍA
     public List<Producto> listarPorCategoria(Long idCategoria) {
-    return productoRepository.findByIdCategoria(idCategoria);
-}
+        return productoRepository.findByIdCategoria(idCategoria);
+    }
 }
