@@ -4,46 +4,109 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.almacen.ms_proveedores.model.Proveedor;
 import com.almacen.ms_proveedores.repository.ProveedorRepository;
 
 @Service
+@Transactional
 public class ProveedorService {
 
     @Autowired
     private ProveedorRepository proveedorRepository;
-    
-    
-     //metodo crear--------------------------------------
+
+    // CREAR
     public Proveedor crear(Proveedor proveedor) {
+
+        // validar nombreEmpresa obligatorio
+        if (proveedor.getNombreEmpresa() == null || proveedor.getNombreEmpresa().isBlank()) {
+            throw new RuntimeException("El nombre de la empresa es obligatorio");
+        }
+
+        // validar duplicado
+        if (proveedorRepository.findAll()
+                .stream()
+                .anyMatch(p -> p.getNombreEmpresa().equalsIgnoreCase(proveedor.getNombreEmpresa()))) {
+            throw new RuntimeException("Ya existe un proveedor con ese nombre de empresa");
+        }
+
+        // validar nombreContacto
+        if (proveedor.getNombreContacto() == null || proveedor.getNombreContacto().isBlank()) {
+            throw new RuntimeException("El nombre de contacto es obligatorio");
+        }
+
+        // validar telefono
+        if (proveedor.getTelefono() == null || proveedor.getTelefono().isBlank()) {
+            throw new RuntimeException("El telefono es obligatorio");
+        }
+
+        // validar categoriaRubro
+        if (proveedor.getCategoriaRubro() == null || proveedor.getCategoriaRubro().isBlank()) {
+            throw new RuntimeException("La categoria de rubro es obligatoria");
+        }
+
         return proveedorRepository.save(proveedor);
     }
 
-    //metodo listar------------------------------------------------------------
-
+    // LISTAR
     public List<Proveedor> listar() {
         return proveedorRepository.findAll();
     }
 
-    //metodo buscar por id------------------
+    // OBTENER POR ID
     public Proveedor obtener(Long id) {
         return proveedorRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
     }
 
-    //metodo actualizar datos del cliente (deuda, limite para fiar, etc)--------------------------------
+    // ACTUALIZAR
     public Proveedor actualizar(Long id, Proveedor actualizado) {
-        Proveedor existe = obtener(id);
+
+        Proveedor existe = proveedorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+
+        // validar nombreEmpresa obligatorio
+        if (actualizado.getNombreEmpresa() == null || actualizado.getNombreEmpresa().isBlank()) {
+            throw new RuntimeException("El nombre de la empresa es obligatorio");
+        }
+
+        // validar nombreContacto
+        if (actualizado.getNombreContacto() == null || actualizado.getNombreContacto().isBlank()) {
+            throw new RuntimeException("El nombre de contacto es obligatorio");
+        }
+
+        // validar telefono
+        if (actualizado.getTelefono() == null || actualizado.getTelefono().isBlank()) {
+            throw new RuntimeException("El telefono es obligatorio");
+        }
+
+        // validar categoriaRubro
+        if (actualizado.getCategoriaRubro() == null || actualizado.getCategoriaRubro().isBlank()) {
+            throw new RuntimeException("La categoria de rubro es obligatoria");
+        }
+
+        // actualizar campos
         existe.setNombreEmpresa(actualizado.getNombreEmpresa());
         existe.setNombreContacto(actualizado.getNombreContacto());
         existe.setTelefono(actualizado.getTelefono());
         existe.setCategoriaRubro(actualizado.getCategoriaRubro());
+
         return proveedorRepository.save(existe);
     }
 
-    //metodo eliminar-----------------------------------------
+    // ELIMINAR
     public void eliminar(Long id) {
-        proveedorRepository.deleteById(id);
+
+        Proveedor existe = proveedorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+
+        proveedorRepository.delete(existe);
     }
+
+    // LISTAR POR CATEGORIA RUBRO
+    public List<Proveedor> listarPorCategoriaRubro(String categoriaRubro) {
+        return proveedorRepository.findByCategoriaRubro(categoriaRubro);
+    }
+    
 }
