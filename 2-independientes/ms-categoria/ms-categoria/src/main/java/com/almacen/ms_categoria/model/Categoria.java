@@ -23,6 +23,5 @@ public class Categoria {
 
     
     private String descripcion; // Ej: Todo tipo de refrescos y jugos
+    
 }
-
-
