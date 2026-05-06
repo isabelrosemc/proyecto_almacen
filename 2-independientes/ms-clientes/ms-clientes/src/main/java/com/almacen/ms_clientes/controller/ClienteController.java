@@ -54,7 +54,7 @@ public class ClienteController {
     clienteService.eliminar(id);
     }
 
-    // Metodo custom (buscar por apogo)
+    // Metodo custom (buscar por apodo)
     @GetMapping("/apodo/{apodo}")
     public Cliente buscarPorApodo(@PathVariable String apodo){
         return clienteService.obtenerPorApodo(apodo);
