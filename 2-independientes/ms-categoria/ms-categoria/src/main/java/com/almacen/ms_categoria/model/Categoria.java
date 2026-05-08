@@ -1,27 +1,41 @@
 package com.almacen.ms_categoria.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@AllArgsConstructor
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "categorias")
+@Getter
+@Setter
 @NoArgsConstructor
-@Data @Entity
+@AllArgsConstructor
+@Builder
 public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String nombre; // Ej: Bebidas, Lacteos
+    @Column(nullable = false, unique = true, length = 100)
+    private String nombre;
 
-    
-    private String descripcion; // Ej: Todo tipo de refrescos y jugos
-    
+    @Column(nullable = false, length = 255)
+    private String descripcion;
+
+    @Column(nullable = false)
+    private Boolean estado;
+
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaCreacion = LocalDateTime.now();
+
+        if (this.estado == null) {
+            this.estado = true;
+        }
+    }
 }

@@ -2,63 +2,71 @@ package com.almacen.ms_categoria.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.almacen.ms_categoria.model.Categoria;
+import com.almacen.ms_categoria.dto.CategoriaRequestDTO;
+import com.almacen.ms_categoria.dto.CategoriaResponseDTO;
 import com.almacen.ms_categoria.service.CategoriaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/categorias")
-
+@RequiredArgsConstructor
+@Slf4j
 public class CategoriaController {
 
-    @Autowired
-    private CategoriaService categoriaService;
+    private final CategoriaService categoriaService;
 
-    // Crear
     @PostMapping
-    public Categoria crear(@Valid @RequestBody Categoria categoria){
-        return categoriaService.crear(categoria);
+    public ResponseEntity<CategoriaResponseDTO> crearCategoria(
+            @Valid @RequestBody CategoriaRequestDTO request
+    ) {
+
+        log.info("POST /api/categorias ejecutado");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(categoriaService.crearCategoria(request));
     }
 
-    // Listar todos
     @GetMapping
-    public List<Categoria> listar(){
-        return categoriaService.listar();
+    public ResponseEntity<List<CategoriaResponseDTO>> listarCategorias() {
+
+        log.info("GET /api/categorias ejecutado");
+
+        return ResponseEntity.ok(categoriaService.listarCategorias());
     }
 
-    // Buscar por id
     @GetMapping("/{id}")
-    public Categoria obtenerPorId(@PathVariable Long id){
-        return categoriaService.obtenerPorId(id);
+    public ResponseEntity<CategoriaResponseDTO> buscarPorId(@PathVariable Long id) {
+
+        log.info("GET /api/categorias/{} ejecutado", id);
+
+        return ResponseEntity.ok(categoriaService.buscarPorId(id));
     }
 
-    // Actualizar
     @PutMapping("/{id}")
-    public Categoria actualizar(@PathVariable Long id, @Valid @RequestBody Categoria categoria){
-        return categoriaService.actualizar(id, categoria);
+    public ResponseEntity<CategoriaResponseDTO> actualizarCategoria(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoriaRequestDTO request
+    ) {
+
+        log.info("PUT /api/categorias/{} ejecutado", id);
+
+        return ResponseEntity.ok(categoriaService.actualizarCategoria(id, request));
     }
 
-    // Eliminar
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id){
-        categoriaService.eliminar(id);
-    }
+    public ResponseEntity<Void> eliminarCategoria(@PathVariable Long id) {
 
-        // Metodo custom (Obtener por nombre)
-    @GetMapping("/nombre/{nombre}")
-    public Categoria listarNombre(@PathVariable String nombre){
-        return categoriaService.obtenerPorNombre(nombre);
-    }
+        log.info("DELETE /api/categorias/{} ejecutado", id);
 
+        categoriaService.eliminarCategoria(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
