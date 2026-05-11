@@ -29,7 +29,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 
         log.info("Intentando crear categoria: {}", request.getNombre());
 
-        if (categoriaRepository.existsByNombre(request.getNombre())) {
+        // 🔴 validación de duplicados (usando tu método real)
+        if (categoriaRepository.findByNombreIgnoreCase(request.getNombre()).isPresent()) {
             throw new DuplicateCategoriaException("La categoria ya existe");
         }
 
