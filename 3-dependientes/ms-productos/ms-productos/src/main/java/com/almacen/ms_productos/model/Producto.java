@@ -1,42 +1,55 @@
 package com.almacen.ms_productos.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@AllArgsConstructor
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "productos")
+@Getter
+@Setter
 @NoArgsConstructor
-@Data @Entity
+@AllArgsConstructor
+@Builder
 public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String nombre;
 
-    @Column(nullable = false)
-    private String marca;
-
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String descripcion;
 
-    @Column(nullable = false)
-    private Long idCategoria;   // relacion con ms-categoria
+    @Column(nullable = false, unique = true, length = 50)
+    private String sku;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
+
+    @Column(name = "categoria_id", nullable = false)
+    private Long categoriaId;
+
+    @Column(name = "proveedor_id", nullable = false)
+    private Long proveedorId;
 
     @Column(nullable = false)
-    private Double precioVenta;
+    private Boolean estado;
 
-    @Column(nullable = false)
-    private String unidadMedida; // litros, unidades , etc
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
 
-    @Column(nullable = false)
-    private String contenidoNeto; //    500 ml, 5 litros, gramos etc
+    @PrePersist
+    public void prePersist() {
 
+        this.fechaCreacion = LocalDateTime.now();
+
+        if (this.estado == null) {
+            this.estado = true;
+        }
+    }
 }

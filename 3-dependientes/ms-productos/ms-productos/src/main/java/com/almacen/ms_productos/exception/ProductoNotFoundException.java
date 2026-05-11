@@ -1,0 +1,9 @@
+package com.almacen.ms_productos.exception;
+
+public class ProductoNotFoundException
+        extends RuntimeException {
+
+    public ProductoNotFoundException(String message) {
+        super(message);
+    }
+}

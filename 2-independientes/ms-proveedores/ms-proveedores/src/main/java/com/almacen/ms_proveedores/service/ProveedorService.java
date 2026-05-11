@@ -1,8 +1,11 @@
 package com.almacen.ms_proveedores.service;
 
-import com.ms.proveedores.dto.*;
+
 
 import java.util.List;
+
+import com.almacen.ms_proveedores.dto.ProveedorRequestDTO;
+import com.almacen.ms_proveedores.dto.ProveedorResponseDTO;
 
 public interface ProveedorService {
 
@@ -20,4 +23,4 @@ public interface ProveedorService {
     );
 
     void eliminarProveedor(Long id);
-}}
+}

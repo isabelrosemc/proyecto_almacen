@@ -1,3 +1,4 @@
+package com.almacen.ms_proveedores.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;

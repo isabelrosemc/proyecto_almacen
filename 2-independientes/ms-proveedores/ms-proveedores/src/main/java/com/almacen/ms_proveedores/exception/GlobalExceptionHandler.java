@@ -1,3 +1,5 @@
+package com.almacen.ms_proveedores.exception;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;

@@ -1,3 +1,5 @@
+package com.almacen.ms_proveedores.dto;
+
 import lombok.*;
 
 import java.time.LocalDateTime;

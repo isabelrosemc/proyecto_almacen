@@ -1,7 +1,9 @@
 package com.almacen.ms_proveedores.repository;
 
-import com.ms.proveedores.model.Proveedor;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.almacen.ms_proveedores.model.Proveedor;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
 
