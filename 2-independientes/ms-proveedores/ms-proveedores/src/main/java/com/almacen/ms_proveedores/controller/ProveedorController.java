@@ -1,61 +1,88 @@
 package com.almacen.ms_proveedores.controller;
 
+
+import com.ms.proveedores.dto.*;
+import com.ms.proveedores.service.ProveedorService;
+
+import jakarta.validation.Valid;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.almacen.ms_proveedores.model.Proveedor;
-import com.almacen.ms_proveedores.service.ProveedorService;
 
 @RestController
 @RequestMapping("/api/proveedores")
+@RequiredArgsConstructor
+@Slf4j
 public class ProveedorController {
 
-    @Autowired
-    private ProveedorService proveedorService;
+    private final ProveedorService proveedorService;
 
-    // Crear
     @PostMapping
-    public Proveedor crear(@RequestBody Proveedor proveedor) {
-        return proveedorService.crear(proveedor);
+    public ResponseEntity<ProveedorResponseDTO>
+    crearProveedor(
+            @Valid @RequestBody
+            ProveedorRequestDTO request
+    ) {
+
+        log.info("POST /api/proveedores");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(proveedorService.crearProveedor(request));
     }
 
-    // Listar todos
     @GetMapping
-    public List<Proveedor> listar(){
-        return proveedorService.listar();
+    public ResponseEntity<List<ProveedorResponseDTO>>
+    listarProveedores() {
+
+        log.info("GET /api/proveedores");
+
+        return ResponseEntity.ok(
+                proveedorService.listarProveedores()
+        );
     }
 
-    // Lista por categoria
-    @GetMapping("/categoria/{categoriaRubro}")
-    public List<Proveedor> listaPorCategoriaRubro(@PathVariable String categoriaRubro) {
-        return proveedorService.listarPorCategoriaRubro(categoriaRubro);
-    }
-
-    // Buscar por ID
     @GetMapping("/{id}")
-    public Proveedor obtener(@PathVariable Long id) {
-        return proveedorService.obtener(id);
+    public ResponseEntity<ProveedorResponseDTO>
+    buscarPorId(@PathVariable Long id) {
+
+        log.info("GET /api/proveedores/{}", id);
+
+        return ResponseEntity.ok(
+                proveedorService.buscarPorId(id)
+        );
     }
 
-    // Actualizar
-    @PutMapping("{id}")
-    public Proveedor actualizar(@PathVariable Long id, @RequestBody Proveedor proveedor) {
-        return proveedorService.actualizar(id, proveedor);
+    @PutMapping("/{id}")
+    public ResponseEntity<ProveedorResponseDTO>
+    actualizarProveedor(
+            @PathVariable Long id,
+            @Valid @RequestBody
+            ProveedorRequestDTO request
+    ) {
+
+        log.info("PUT /api/proveedores/{}", id);
+
+        return ResponseEntity.ok(
+                proveedorService.actualizarProveedor(
+                        id,
+                        request
+                )
+        );
     }
 
-    // Eliminar
-    @DeleteMapping("{id}")
-    public void eliminar(@PathVariable Long id) {
-        proveedorService.eliminar(id);
-    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void>
+    eliminarProveedor(@PathVariable Long id) {
 
+        log.info("DELETE /api/proveedores/{}", id);
+
+        proveedorService.eliminarProveedor(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

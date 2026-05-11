@@ -19,16 +19,34 @@ public class Proveedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String nombreEmpresa;
+    @Column(name = "razon_social", nullable = false, length = 150)
+    private String razonSocial;
 
-    @Column(nullable = false)
-    private String nombreContacto; // nombre del vendedor 
+    @Column(nullable = false, unique = true, length = 20)
+    private String rut;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
+
+    @Column(nullable = false, length = 20)
     private String telefono;
 
-    @Column(nullable = false)
-    private String categoriaRubro; // por ejemplo: Bebidas , lacteos, Abarrotes, etc
+    @Column(nullable = false, length = 255)
+    private String direccion;
 
+    @Column(nullable = false)
+    private Boolean estado;
+
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @PrePersist
+    public void prePersist() {
+
+        this.fechaCreacion = LocalDateTime.now();
+
+        if (this.estado == null) {
+            this.estado = true;
+        }
+    }
 }
