@@ -1,14 +1,20 @@
-import com.ms.proveedores.dto.*;
-import com.ms.proveedores.exception.*;
-import com.ms.proveedores.mapper.ProveedorMapper;
-import com.ms.proveedores.model.Proveedor;
-import com.ms.proveedores.repository.ProveedorRepository;
-import com.ms.proveedores.service.ProveedorService;
+package com.almacen.ms_proveedores.service.impl;
+
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+
+import com.almacen.ms_proveedores.dto.ProveedorRequestDTO;
+import com.almacen.ms_proveedores.dto.ProveedorResponseDTO;
+import com.almacen.ms_proveedores.exception.DuplicateProveedorException;
+import com.almacen.ms_proveedores.exception.ProveedorNotFoundException;
+import com.almacen.ms_proveedores.mapper.ProveedorMapper;
+import com.almacen.ms_proveedores.model.Proveedor;
+import com.almacen.ms_proveedores.repository.ProveedorRepository;
+import com.almacen.ms_proveedores.service.ProveedorService;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,8 +1,6 @@
 package com.almacen.ms_proveedores.controller;
 
 
-import com.ms.proveedores.dto.*;
-import com.ms.proveedores.service.ProveedorService;
 
 import jakarta.validation.Valid;
 
@@ -11,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import com.almacen.ms_proveedores.dto.ProveedorRequestDTO;
+import com.almacen.ms_proveedores.dto.ProveedorResponseDTO;
+import com.almacen.ms_proveedores.service.ProveedorService;
 
 import java.util.List;
 

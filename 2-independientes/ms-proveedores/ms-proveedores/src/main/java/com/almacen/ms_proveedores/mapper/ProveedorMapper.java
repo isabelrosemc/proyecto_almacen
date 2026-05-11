@@ -1,6 +1,8 @@
-import com.ms.proveedores.dto.ProveedorRequestDTO;
-import com.ms.proveedores.dto.ProveedorResponseDTO;
-import com.ms.proveedores.model.Proveedor;
+package com.almacen.ms_proveedores.mapper;
+
+import com.almacen.ms_proveedores.dto.ProveedorRequestDTO;
+import com.almacen.ms_proveedores.dto.ProveedorResponseDTO;
+import com.almacen.ms_proveedores.model.Proveedor;
 
 public class ProveedorMapper {
 
