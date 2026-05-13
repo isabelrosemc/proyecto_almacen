@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import com.almacen.ms_productos.client.CategoriaClient;
 import com.almacen.ms_productos.client.ProveedorClient;
+import com.almacen.ms_productos.client.CategoriaClient;
 import com.almacen.ms_productos.dto.CategoriaDTO;
 import com.almacen.ms_productos.dto.ProductoRequestDTO;
 import com.almacen.ms_productos.dto.ProductoResponseDTO;
@@ -62,7 +62,7 @@ public class ProductoServiceImpl
         try {
 
             categoria =
-                    categoriaFeignClient.obtenerCategoria(
+                    categoriaClient.obtenerCategoria(
                             request.getCategoriaId()
                     );
 
@@ -76,7 +76,7 @@ public class ProductoServiceImpl
         try {
 
             proveedor =
-                    proveedorFeignClient.obtenerProveedor(
+                    proveedorClient.obtenerProveedor(
                             request.getProveedorId()
                     );
 
@@ -113,13 +113,13 @@ public class ProductoServiceImpl
                 .map(producto -> {
 
                     CategoriaDTO categoria =
-                            categoriaFeignClient
+                            categoriaClient
                                     .obtenerCategoria(
                                             producto.getCategoriaId()
                                     );
 
                     ProveedorDTO proveedor =
-                            proveedorFeignClient
+                            proveedorClient
                                     .obtenerProveedor(
                                             producto.getProveedorId()
                                     );
@@ -146,12 +146,12 @@ public class ProductoServiceImpl
                                 ));
 
         CategoriaDTO categoria =
-                categoriaFeignClient.obtenerCategoria(
+                categoriaClient.obtenerCategoria(
                         producto.getCategoriaId()
                 );
 
         ProveedorDTO proveedor =
-                proveedorFeignClient.obtenerProveedor(
+                proveedorClient.obtenerProveedor(
                         producto.getProveedorId()
                 );
 
@@ -189,12 +189,12 @@ public class ProductoServiceImpl
                 productoRepository.save(producto);
 
         CategoriaDTO categoria =
-                categoriaFeignClient.obtenerCategoria(
+                categoriaClient.obtenerCategoria(
                         actualizado.getCategoriaId()
                 );
 
         ProveedorDTO proveedor =
-                proveedorFeignClient.obtenerProveedor(
+                proveedorClient.obtenerProveedor(
                         actualizado.getProveedorId()
                 );
 
