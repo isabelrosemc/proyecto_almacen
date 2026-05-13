@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity @Data
+@Entity
+@Data
 public class Stock {
     
     @Id
@@ -20,15 +21,15 @@ public class Stock {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private Long idProducto; // Conexión ms-productos
+    private Long idProducto;
 
     @Min(0)
     @Column(nullable = false)
-    private Double cantidadActual;
+    private Integer cantidadActual;
 
     @Min(0)
     @Column(nullable = false)
-    private Double cantidadMinima; // Umbral para alertas
+    private Integer cantidadMinima;
 
-    private String ubicacion; // Ejemplo: Pasillo A-1
+    private String ubicacion;
 }

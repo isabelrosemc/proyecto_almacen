@@ -9,6 +9,6 @@ import com.almacen.ms_stock.model.Stock;
 
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long> {
-    // Método vital para buscar el stock de un producto específico
+
     Optional<Stock> findByIdProducto(Long idProducto);
 }
