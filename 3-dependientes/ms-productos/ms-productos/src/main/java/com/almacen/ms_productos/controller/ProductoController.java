@@ -1,58 +1,92 @@
 package com.almacen.ms_productos.controller;
 
-import java.util.List;
+import com.almacen.ms_productos.dto.*;
+import com.almacen.ms_productos.service.ProductoService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import com.almacen.ms_productos.model.Producto;
-import com.almacen.ms_productos.service.ProductoService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
+@RequiredArgsConstructor
+@Slf4j
 public class ProductoController {
 
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
 
-    // Crear
     @PostMapping
-    public Producto crear(@RequestBody Producto producto) {
-        return productoService.crear(producto);
+    public ResponseEntity<ProductoResponseDTO>
+    crearProducto(
+            @Valid @RequestBody
+            ProductoRequestDTO request
+    ) {
+
+        log.info("POST /api/productos");
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        productoService
+                                .crearProducto(request)
+                );
     }
 
-    // Listar todos
     @GetMapping
-    public List<Producto> listar() {
-        return productoService.listar();
+    public ResponseEntity<List<ProductoResponseDTO>>
+    listarProductos() {
+
+        log.info("GET /api/productos");
+
+        return ResponseEntity.ok(
+                productoService.listarProductos()
+        );
     }
 
-    // Obtener por ID
     @GetMapping("/{id}")
-    public Producto obtener(@PathVariable Long id) {
-        return productoService.obtener(id);
+    public ResponseEntity<ProductoResponseDTO>
+    buscarPorId(@PathVariable Long id) {
+
+        log.info("GET /api/productos/{}", id);
+
+        return ResponseEntity.ok(
+                productoService.buscarPorId(id)
+        );
     }
 
-    // Actualizar
     @PutMapping("/{id}")
-    public Producto actualizar(@PathVariable Long id, @RequestBody Producto producto) {
-        return productoService.actualizar(id, producto);
+    public ResponseEntity<ProductoResponseDTO>
+    actualizarProducto(
+            @PathVariable Long id,
+
+            @Valid @RequestBody
+            ProductoRequestDTO request
+    ) {
+
+        log.info("PUT /api/productos/{}", id);
+
+        return ResponseEntity.ok(
+                productoService.actualizarProducto(
+                        id,
+                        request
+                )
+        );
     }
 
-    // Eliminar
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
-        productoService.eliminar(id);
-    }
+    public ResponseEntity<Void>
+    eliminarProducto(@PathVariable Long id) {
 
-    // Método custom (por categoría)
-    @GetMapping("/categoria/{idCategoria}")
-    public List<Producto> listarPorCategoria(@PathVariable Long idCategoria) {
-        return productoService.listarPorCategoria(idCategoria);
-    }
+        log.info("DELETE /api/productos/{}", id);
 
-    @GetMapping("/test")
-    public String test() {
-        return "funciona";
+        productoService.eliminarProducto(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

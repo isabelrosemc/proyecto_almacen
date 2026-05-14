@@ -1,12 +1,12 @@
 server:
-  port: 8081
+  port: 8086
 
 spring:
   application:
-    name: ms-categorias
+    name: ms-compras
 
   datasource:
-    url: jdbc:mysql://localhost:3306/db_categorias
+    url: jdbc:mysql://localhost:3306/db_compras
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,14 +14,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
     show-sql: true
+
     properties:
       hibernate:
         format_sql: true
-
-  jackson:
-    serialization:
-      INDENT_OUTPUT: true
 
 eureka:
   client:
@@ -30,5 +28,4 @@ eureka:
 
 logging:
   level:
-    root: INFO
-    com.ms.categorias: DEBUG
+    com.almacen.ms_compras: DEBUG

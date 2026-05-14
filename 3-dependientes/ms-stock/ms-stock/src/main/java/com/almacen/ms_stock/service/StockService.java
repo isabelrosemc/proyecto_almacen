@@ -1,20 +1,23 @@
 package com.almacen.ms_stock.service;
 
-import java.util.List;
+import com.almacen.ms_stock.dto.*;
 
-import com.almacen.ms_stock.model.Stock;
+import java.util.List;
 
 public interface StockService {
 
-    List<Stock> listar();
+    StockResponseDTO crearStock(
+            StockRequestDTO request
+    );
 
-    Stock buscarPorId(Long id);
+    List<StockResponseDTO> listarStock();
 
-    Stock guardar(Stock stock);
+    StockResponseDTO buscarPorId(Long id);
 
-    Stock actualizar(Long id, Stock stock);
+    StockResponseDTO actualizarStock(
+            Long id,
+            StockRequestDTO request
+    );
 
-    void eliminar(Long id);
-
-    Stock buscarPorIdProducto(Long idProducto);
+    void eliminarStock(Long id);
 }

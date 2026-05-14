@@ -1,25 +1,19 @@
 package com.almacen.ms_productos.service.impl;
 
+import com.almacen.ms_productos.client.*;
+import com.almacen.ms_productos.dto.*;
+import com.almacen.ms_productos.exception.*;
+import com.almacen.ms_productos.mapper.ProductoMapper;
+import com.almacen.ms_productos.model.Producto;
+import com.almacen.ms_productos.repository.ProductoRepository;
+import com.almacen.ms_productos.service.ProductoService;
+
 import feign.FeignException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
-
-import com.almacen.ms_productos.client.ProveedorClient;
-import com.almacen.ms_productos.client.CategoriaClient;
-import com.almacen.ms_productos.dto.CategoriaDTO;
-import com.almacen.ms_productos.dto.ProductoRequestDTO;
-import com.almacen.ms_productos.dto.ProductoResponseDTO;
-import com.almacen.ms_productos.dto.ProveedorDTO;
-import com.almacen.ms_productos.exception.DuplicateProductoException;
-import com.almacen.ms_productos.exception.ProductoNotFoundException;
-import com.almacen.ms_productos.exception.RemoteServiceException;
-import com.almacen.ms_productos.mapper.ProductoMapper;
-import com.almacen.ms_productos.model.Producto;
-import com.almacen.ms_productos.repository.ProductoRepository;
-import com.almacen.ms_productos.service.ProductoService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +26,9 @@ public class ProductoServiceImpl
 
     private final ProductoRepository productoRepository;
 
-    private final CategoriaClient categoriaFeignClient;
+    private final CategoriaFeignClient categoriaFeignClient;
 
-    private final ProveedorClient proveedorFeignClient;
+    private final ProveedorFeignClient proveedorFeignClient;
 
     @Override
     public ProductoResponseDTO crearProducto(
@@ -62,7 +56,7 @@ public class ProductoServiceImpl
         try {
 
             categoria =
-                    categoriaClient.obtenerCategoria(
+                    categoriaFeignClient.obtenerCategoria(
                             request.getCategoriaId()
                     );
 
@@ -76,7 +70,7 @@ public class ProductoServiceImpl
         try {
 
             proveedor =
-                    proveedorClient.obtenerProveedor(
+                    proveedorFeignClient.obtenerProveedor(
                             request.getProveedorId()
                     );
 
@@ -113,13 +107,13 @@ public class ProductoServiceImpl
                 .map(producto -> {
 
                     CategoriaDTO categoria =
-                            categoriaClient
+                            categoriaFeignClient
                                     .obtenerCategoria(
                                             producto.getCategoriaId()
                                     );
 
                     ProveedorDTO proveedor =
-                            proveedorClient
+                            proveedorFeignClient
                                     .obtenerProveedor(
                                             producto.getProveedorId()
                                     );
@@ -146,12 +140,12 @@ public class ProductoServiceImpl
                                 ));
 
         CategoriaDTO categoria =
-                categoriaClient.obtenerCategoria(
+                categoriaFeignClient.obtenerCategoria(
                         producto.getCategoriaId()
                 );
 
         ProveedorDTO proveedor =
-                proveedorClient.obtenerProveedor(
+                proveedorFeignClient.obtenerProveedor(
                         producto.getProveedorId()
                 );
 
@@ -189,12 +183,12 @@ public class ProductoServiceImpl
                 productoRepository.save(producto);
 
         CategoriaDTO categoria =
-                categoriaClient.obtenerCategoria(
+                categoriaFeignClient.obtenerCategoria(
                         actualizado.getCategoriaId()
                 );
 
         ProveedorDTO proveedor =
-                proveedorClient.obtenerProveedor(
+                proveedorFeignClient.obtenerProveedor(
                         actualizado.getProveedorId()
                 );
 

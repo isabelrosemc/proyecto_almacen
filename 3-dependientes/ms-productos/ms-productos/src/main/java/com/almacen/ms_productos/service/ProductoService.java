@@ -1,10 +1,8 @@
 package com.almacen.ms_productos.service;
 
+import com.almacen.ms_productos.dto.*;
 
 import java.util.List;
-
-import com.almacen.ms_productos.dto.ProductoRequestDTO;
-import com.almacen.ms_productos.dto.ProductoResponseDTO;
 
 public interface ProductoService {
 

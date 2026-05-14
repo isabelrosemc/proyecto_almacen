@@ -9,6 +9,21 @@ spring:
     gateway:
       routes:
 
+        - id: ms-ventas
+          uri: lb://ms-ventas
+          predicates:
+            - Path=/api/ventas/**
+
+        - id: ms-compras
+          uri: lb://ms-compras
+          predicates:
+            - Path=/api/compras/**
+              
+        - id: ms-stock
+          uri: lb://ms-stock
+          predicates:
+            - Path=/api/stock/**
+
         - id: ms-categorias
           uri: lb://ms-categorias
           predicates:

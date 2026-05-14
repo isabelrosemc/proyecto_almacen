@@ -1,6 +1,5 @@
 package com.almacen.ms_productos.dto;
 
-
 import jakarta.validation.constraints.*;
 import lombok.*;
 

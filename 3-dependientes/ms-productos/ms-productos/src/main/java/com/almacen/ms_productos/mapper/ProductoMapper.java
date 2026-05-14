@@ -1,9 +1,6 @@
 package com.almacen.ms_productos.mapper;
 
-import com.almacen.ms_productos.dto.CategoriaDTO;
-import com.almacen.ms_productos.dto.ProductoRequestDTO;
-import com.almacen.ms_productos.dto.ProductoResponseDTO;
-import com.almacen.ms_productos.dto.ProveedorDTO;
+import com.almacen.ms_productos.dto.*;
 import com.almacen.ms_productos.model.Producto;
 
 public class ProductoMapper {

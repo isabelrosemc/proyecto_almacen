@@ -1,35 +1,51 @@
 package com.almacen.ms_stock.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
 @Entity
-@Data
+@Table(name = "stock")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Stock {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private Long idProducto;
+    @Column(
+            name = "producto_id",
+            nullable = false,
+            unique = true
+    )
+    private Long productoId;
 
-    @Min(0)
-    @Column(nullable = false)
-    private Integer cantidadActual;
+    @Column(name = "stock_actual")
+    private Integer stockActual;
 
-    @Min(0)
-    @Column(nullable = false)
-    private Integer cantidadMinima;
+    @Column(name = "stock_minimo")
+    private Integer stockMinimo;
 
-    private String ubicacion;
+    @Column(name = "stock_maximo")
+    private Integer stockMaximo;
+
+    private Boolean estado;
+
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @PrePersist
+    public void prePersist() {
+
+        this.fechaCreacion = LocalDateTime.now();
+
+        if (this.estado == null) {
+            this.estado = true;
+        }
+    }
 }
