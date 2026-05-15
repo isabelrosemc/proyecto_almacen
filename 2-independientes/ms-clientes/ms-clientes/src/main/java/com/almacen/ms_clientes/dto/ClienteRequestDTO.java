@@ -25,6 +25,4 @@ public class ClienteRequestDTO {
     @Size(max = 255)
     private String direccion;
 
-    @NotNull(message = "El estado es obligatorio")
-    private Boolean estado;
 }

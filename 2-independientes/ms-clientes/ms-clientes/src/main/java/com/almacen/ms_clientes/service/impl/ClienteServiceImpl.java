@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +35,10 @@ public class ClienteServiceImpl implements ClienteService {
 
         Cliente cliente = ClienteMapper.toEntity(dto);
 
+        // CONTROL DEL SISTEMA (NO DESDE DTO)
+        cliente.setEstado(true);
+        cliente.setFechaRegistro(LocalDateTime.now());
+
         Cliente guardado = repository.save(cliente);
 
         log.info("Cliente creado correctamente ID {}", guardado.getId());
@@ -48,6 +53,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         return repository.findAll()
                 .stream()
+                .filter(Cliente::getEstado) // solo activos
                 .map(ClienteMapper::toDTO)
                 .toList();
     }
@@ -64,12 +70,15 @@ public class ClienteServiceImpl implements ClienteService {
                         )
                 );
 
+        if (!Boolean.TRUE.equals(cliente.getEstado())) {
+            throw new ClienteNotFoundException("Cliente inactivo");
+        }
+
         return ClienteMapper.toDTO(cliente);
     }
 
     @Override
-    public ClienteResponseDTO actualizar(Long id,
-                                         ClienteRequestDTO dto) {
+    public ClienteResponseDTO actualizar(Long id, ClienteRequestDTO dto) {
 
         log.info("Actualizando cliente ID {}", id);
 
@@ -85,7 +94,8 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setEmail(dto.getEmail());
         cliente.setTelefono(dto.getTelefono());
         cliente.setDireccion(dto.getDireccion());
-        cliente.setEstado(dto.getEstado());
+
+        // NO se toca estado aquí
 
         Cliente actualizado = repository.save(cliente);
 
@@ -106,8 +116,11 @@ public class ClienteServiceImpl implements ClienteService {
                         )
                 );
 
-        repository.delete(cliente);
+        // SOFT DELETE
+        cliente.setEstado(false);
 
-        log.info("Cliente eliminado correctamente");
+        repository.save(cliente);
+
+        log.info("Cliente desactivado correctamente");
     }
 }

@@ -4,8 +4,6 @@ import com.almacen.ms_clientes.dto.ClienteRequestDTO;
 import com.almacen.ms_clientes.dto.ClienteResponseDTO;
 import com.almacen.ms_clientes.model.Cliente;
 
-import java.time.LocalDateTime;
-
 public class ClienteMapper {
 
     public static Cliente toEntity(ClienteRequestDTO dto) {
@@ -16,8 +14,6 @@ public class ClienteMapper {
                 .email(dto.getEmail())
                 .telefono(dto.getTelefono())
                 .direccion(dto.getDireccion())
-                .estado(dto.getEstado())
-                .fechaRegistro(LocalDateTime.now())
                 .build();
     }
 
