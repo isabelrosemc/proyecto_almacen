@@ -6,7 +6,7 @@ spring:
     name: ms-proveedores
 
   datasource:
-    url: jdbc:mysql://localhost:3306/db_proveedores
+    url: jdbc:mysql://localhost:3307/proveedores_db
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
