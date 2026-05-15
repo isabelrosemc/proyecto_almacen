@@ -1,62 +1,69 @@
 package com.almacen.ms_clientes.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.almacen.ms_clientes.model.Cliente;
+import com.almacen.ms_clientes.dto.ClienteRequestDTO;
+import com.almacen.ms_clientes.dto.ClienteResponseDTO;
 import com.almacen.ms_clientes.service.ClienteService;
-
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
+@RequiredArgsConstructor
+@Slf4j
 public class ClienteController {
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ClienteService service;
 
-    // Crear
     @PostMapping
-    public Cliente crear(@Valid @RequestBody Cliente cliente){
-        return clienteService.crear(cliente);
+    public ResponseEntity<ClienteResponseDTO> crear(
+            @Valid @RequestBody ClienteRequestDTO dto) {
+
+        log.info("POST /api/clientes");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.crear(dto));
     }
 
-    // Listar todos
     @GetMapping
-    public List<Cliente> listar(){
-        return clienteService.listar();
+    public ResponseEntity<List<ClienteResponseDTO>> listar() {
+
+        log.info("GET /api/clientes");
+
+        return ResponseEntity.ok(service.listar());
     }
 
-    // Obtener por id
     @GetMapping("/{id}")
-    public Cliente obtenerPorId(@PathVariable Long id){
-        return clienteService.obtenerPorId(id);
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(
+            @PathVariable Long id) {
+
+        log.info("GET /api/clientes/{}", id);
+
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // Actualizar
     @PutMapping("/{id}")
-    public Cliente actualizar( @PathVariable Long id, @Valid @RequestBody Cliente cliente){
-        return clienteService.actualizar(id, cliente);
+    public ResponseEntity<ClienteResponseDTO> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ClienteRequestDTO dto) {
+
+        log.info("PUT /api/clientes/{}", id);
+
+        return ResponseEntity.ok(service.actualizar(id, dto));
     }
 
-    // Eliminar
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id){
-    clienteService.eliminar(id);
-    }
+    public ResponseEntity<Void> eliminar(
+            @PathVariable Long id) {
 
-    // Metodo custom (buscar por apodo)
-    @GetMapping("/apodo/{apodo}")
-    public Cliente buscarPorApodo(@PathVariable String apodo){
-        return clienteService.obtenerPorApodo(apodo);
+        log.info("DELETE /api/clientes/{}", id);
+
+        service.eliminar(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
