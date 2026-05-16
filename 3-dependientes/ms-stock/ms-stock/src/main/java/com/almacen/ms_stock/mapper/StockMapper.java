@@ -14,7 +14,11 @@ public class StockMapper {
                 .stockActual(dto.getStockActual())
                 .stockMinimo(dto.getStockMinimo())
                 .stockMaximo(dto.getStockMaximo())
-                .estado(dto.getEstado())
+                .estado(
+                        dto.getEstado() != null
+                                ? dto.getEstado()
+                                : true
+                )
                 .build();
     }
 

@@ -24,4 +24,6 @@ public class StockResponseDTO {
     private Boolean estado;
 
     private LocalDateTime fechaCreacion;
+
+    private String mensaje;
 }

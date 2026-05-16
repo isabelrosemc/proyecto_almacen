@@ -75,10 +75,17 @@ public class StockServiceImpl
         log.info("Stock creado correctamente ID: {}",
                 guardado.getId());
 
-        return StockMapper.toDTO(
-                guardado,
-                producto
+        StockResponseDTO response =
+                StockMapper.toDTO(
+                        guardado,
+                        producto
+                );
+
+        response.setMensaje(
+                "Stock creado correctamente"
         );
+
+        return response;
     }
 
     @Override
@@ -148,8 +155,10 @@ public class StockServiceImpl
         stock.setStockActual(request.getStockActual());
         stock.setStockMinimo(request.getStockMinimo());
         stock.setStockMaximo(request.getStockMaximo());
-        stock.setEstado(request.getEstado());
+        if (request.getEstado() != null) {
 
+                stock.setEstado(request.getEstado());
+}
         Stock actualizado =
                 stockRepository.save(stock);
 
@@ -158,12 +167,33 @@ public class StockServiceImpl
                         actualizado.getProductoId()
                 );
 
+        String mensaje =
+                "Stock actualizado correctamente";
+
+        if (actualizado.getStockActual() == 0) {
+
+            mensaje = "SIN STOCK";
+        }
+        else if (
+                actualizado.getStockActual()
+                <= actualizado.getStockMinimo()
+        ) {
+
+            mensaje =
+                    "ALERTA: stock bajo minimo";
+        }
+
         log.info("Stock actualizado correctamente");
 
-        return StockMapper.toDTO(
-                actualizado,
-                producto
-        );
+        StockResponseDTO response =
+                StockMapper.toDTO(
+                        actualizado,
+                        producto
+                );
+
+        response.setMensaje(mensaje);
+
+        return response;
     }
 
     @Override
