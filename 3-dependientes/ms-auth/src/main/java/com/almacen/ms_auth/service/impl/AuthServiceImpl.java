@@ -3,11 +3,13 @@ package com.almacen.ms_auth.service.impl;
 import com.almacen.ms_auth.client.UsuarioClient;
 import com.almacen.ms_auth.dto.*;
 import com.almacen.ms_auth.exception.UnauthorizedException;
-import com.almacen.ms_auth.security.JwtUtil;
 import com.almacen.ms_auth.service.AuthService;
+import com.almacen.ms_auth.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,41 +18,71 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UsuarioClient usuarioClient;
+
     private final JwtUtil jwtUtil;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
-    public AuthResponseDTO login(LoginRequestDTO dto) {
+    public LoginResponseDTO login(
+            LoginRequestDTO request
+    ) {
 
-        log.info("Intentando login usuario: {}", dto.getCorreo());
+        log.info("Intentando login para email: {}",
+                request.getEmail());
 
-        UsuarioDTO usuario =
-                usuarioClient.obtenerPorCorreo(dto.getCorreo());
+        UsuarioResponseDTO usuario;
 
-        if (!usuario.getPassword().equals(dto.getPassword())) {
+        try {
 
-            log.error("Contraseña incorrecta");
+            usuario = usuarioClient.obtenerUsuarioPorEmail(
+                    request.getEmail()
+            );
+
+        } catch (Exception ex) {
+
+            log.error("Usuario no encontrado");
 
             throw new UnauthorizedException(
-                    "Credenciales inválidas");
+                    "Credenciales invalidas"
+            );
         }
 
-        if (!usuario.getActivo()) {
+        if (!passwordEncoder.matches(
+
+        request.getPassword(),
+
+        usuario.getPassword()
+
+        )) {
+
+        log.error("Password incorrecta");
+
+        throw new UnauthorizedException(
+                "Credenciales invalidas"
+        );
+        }
+
+        if (!usuario.getEstado()) {
 
             log.error("Usuario inactivo");
 
             throw new UnauthorizedException(
-                    "Usuario inactivo");
+                    "Usuario inactivo"
+            );
         }
 
         String token = jwtUtil.generarToken(
-                usuario.getCorreo(),
-                usuario.getRol());
+                usuario.getEmail(),
+                usuario.getRol()
+        );
 
-        log.info("Login exitoso usuario: {}", usuario.getCorreo());
+        log.info("JWT generado correctamente");
 
-        return AuthResponseDTO.builder()
+        return LoginResponseDTO.builder()
                 .token(token)
                 .tipo("Bearer")
+                .email(usuario.getEmail())
                 .rol(usuario.getRol())
                 .build();
     }

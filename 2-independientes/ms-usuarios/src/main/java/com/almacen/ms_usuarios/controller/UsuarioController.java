@@ -18,62 +18,77 @@ import java.util.List;
 @Slf4j
 public class UsuarioController {
 
-    private final UsuarioService service;
+    private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> crear(
-            @Valid @RequestBody UsuarioRequestDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> crearUsuario(
+            @Valid @RequestBody UsuarioRequestDTO request
+    ) {
 
-        log.info("POST /api/usuarios");
+        log.info("Solicitud para crear usuario");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.crearUsuario(dto));
+                .body(usuarioService.crearUsuario(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+    public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
 
-        log.info("GET /api/usuarios");
+        log.info("Solicitud para listar usuarios");
 
-        return ResponseEntity.ok(service.listarUsuarios());
+        return ResponseEntity.ok(
+                usuarioService.listarUsuarios()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> obtener(
-            @PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(
+            @PathVariable Long id
+    ) {
 
-        log.info("GET /api/usuarios/{}", id);
+        log.info("Solicitud para obtener usuario con ID: {}", id);
 
-        return ResponseEntity.ok(service.obtenerUsuario(id));
+        return ResponseEntity.ok(
+                usuarioService.obtenerUsuarioPorId(id)
+        );
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorEmail(
+            @PathVariable String email
+    ) {
+
+        log.info("Solicitud para obtener usuario con email: {}", email);
+
+        return ResponseEntity.ok(
+                usuarioService.obtenerUsuarioPorEmail(email)
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> actualizar(
+    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
             @PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDTO dto) {
 
-        log.info("PUT /api/usuarios/{}", id);
+            @Valid
+            @RequestBody UsuarioRequestDTO request
+    ) {
 
-        return ResponseEntity.ok(service.actualizarUsuario(id, dto));
+        log.info("Solicitud para actualizar usuario con ID: {}", id);
+
+        return ResponseEntity.ok(
+                usuarioService.actualizarUsuario(id, request)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(
-            @PathVariable Long id) {
+    public ResponseEntity<Void> eliminarUsuario(
+            @PathVariable Long id
+    ) {
 
-        log.info("DELETE /api/usuarios/{}", id);
+        log.info("Solicitud para eliminar usuario con ID: {}", id);
 
-        service.eliminarUsuario(id);
+        usuarioService.eliminarUsuario(id);
 
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/correo/{correo}")
-    public ResponseEntity<UsuarioResponseDTO> obtenerPorCorreo(
-            @PathVariable String correo) {
-
-        log.info("GET /api/usuarios/correo/{}", correo);
-
-        return ResponseEntity.ok(service.obtenerPorCorreo(correo));
-}
 }

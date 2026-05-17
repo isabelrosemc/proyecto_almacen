@@ -2,15 +2,18 @@ package com.almacen.ms_auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequestDTO {
 
-    @Email(message = "Correo inválido")
-    @NotBlank(message = "El correo es obligatorio")
-    private String correo;
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Email invalido")
+    private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = "La password es obligatoria")
     private String password;
 }

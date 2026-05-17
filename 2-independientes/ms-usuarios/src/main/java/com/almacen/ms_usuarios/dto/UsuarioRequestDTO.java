@@ -1,22 +1,33 @@
 package com.almacen.ms_usuarios.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import com.almacen.ms_usuarios.model.enums.RolNombre;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsuarioRequestDTO {
 
     @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 3, max = 100)
     private String nombre;
 
-    @Email(message = "Correo inválido")
-    @NotBlank(message = "El correo es obligatorio")
-    private String correo;
+    @NotBlank(message = "El apellido es obligatorio")
+    @Size(min = 3, max = 100)
+    private String apellido;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Email invalido")
+    private String email;
+
+    @NotBlank(message = "La password es obligatoria")
+    @Size(min = 6, max = 255)
     private String password;
 
-    @NotBlank(message = "El rol es obligatorio")
-    private String rol;
+    @NotNull(message = "El rol es obligatorio")
+    private RolNombre rol;
+
+    private Boolean estado;
 }

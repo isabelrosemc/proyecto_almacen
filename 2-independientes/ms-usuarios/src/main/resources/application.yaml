@@ -6,7 +6,7 @@ spring:
     name: ms-usuarios
 
   datasource:
-    url: jdbc:mysql://localhost:3307/usuarios_db
+    url: jdbc:mysql://localhost:3307/db_usuarios
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -24,3 +24,15 @@ spring:
 logging:
   level:
     root: INFO
+    com.almacen.msusuarios: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true

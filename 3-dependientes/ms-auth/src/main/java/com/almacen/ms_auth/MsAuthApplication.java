@@ -9,6 +9,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class MsAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MsAuthApplication.class, args);
+
+        SpringApplication.run(
+                MsAuthApplication.class,
+                args
+        );
     }
 }

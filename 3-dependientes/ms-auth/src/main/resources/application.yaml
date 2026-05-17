@@ -5,13 +5,22 @@ spring:
   application:
     name: ms-auth
 
-jwt:
-  secret: miclaveultrasecretaparajwt
-  expiration: 3600000
-
 logging:
   level:
     root: INFO
+    com.almacen.msauth: DEBUG
 
-usuarios:
-  url: http://localhost:8084
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: miclave_super_secreta_2026
+  expiration: 3600000

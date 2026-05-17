@@ -1,7 +1,7 @@
 package com.almacen.ms_auth.controller;
 
-import com.almacen.ms_auth.dto.AuthResponseDTO;
 import com.almacen.ms_auth.dto.LoginRequestDTO;
+import com.almacen.ms_auth.dto.LoginResponseDTO;
 import com.almacen.ms_auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,19 +10,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 
-    private final AuthService service;
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(
-            @Valid @RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<LoginResponseDTO> login(
 
-        log.info("POST /api/auth/login");
+            @Valid
+            @RequestBody
+            LoginRequestDTO request
 
-        return ResponseEntity.ok(service.login(dto));
+    ) {
+
+        log.info("Solicitud de login recibida");
+
+        return ResponseEntity.ok(
+                authService.login(request)
+        );
     }
 }

@@ -2,13 +2,17 @@ package com.almacen.ms_usuarios.service.impl;
 
 import com.almacen.ms_usuarios.dto.UsuarioRequestDTO;
 import com.almacen.ms_usuarios.dto.UsuarioResponseDTO;
+import com.almacen.ms_usuarios.exception.DuplicateResourceException;
 import com.almacen.ms_usuarios.exception.ResourceNotFoundException;
+import com.almacen.ms_usuarios.mapper.UsuarioMapper;
 import com.almacen.ms_usuarios.model.Usuario;
 import com.almacen.ms_usuarios.repository.UsuarioRepository;
 import com.almacen.ms_usuarios.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,26 +22,41 @@ import java.util.List;
 @Slf4j
 public class UsuarioServiceImpl implements UsuarioService {
 
-    private final UsuarioRepository repository;
+    private final UsuarioRepository usuarioRepository;
+
+    private final UsuarioMapper usuarioMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO request) {
 
-        log.info("Creando usuario con correo: {}", dto.getCorreo());
+        log.info("Intentando crear usuario con email: {}", request.getEmail());
+
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
+
+            log.error("El email ya existe: {}", request.getEmail());
+
+            throw new DuplicateResourceException(
+                    "El email ya existe"
+            );
+        }
 
         Usuario usuario = Usuario.builder()
-                .nombre(dto.getNombre())
-                .correo(dto.getCorreo())
-                .password(dto.getPassword())
-                .rol(dto.getRol())
-                .activo(true)
+                .nombre(request.getNombre())
+                .apellido(request.getApellido())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .estado(request.getEstado())
+                .rol(request.getRol())
                 .build();
 
-        Usuario guardado = repository.save(usuario);
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
-        log.info("Usuario creado con ID: {}", guardado.getId());
+        log.info("Usuario creado correctamente con ID: {}",
+                usuarioGuardado.getId());
 
-        return mapToResponse(guardado);
+        return usuarioMapper.toDTO(usuarioGuardado);
     }
 
     @Override
@@ -45,79 +64,86 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         log.info("Listando usuarios");
 
-        return repository.findAll()
+        return usuarioRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(usuarioMapper::toDTO)
                 .toList();
     }
 
     @Override
-    public UsuarioResponseDTO obtenerUsuario(Long id) {
+    public UsuarioResponseDTO obtenerUsuarioPorId(Long id) {
 
-        log.info("Buscando usuario ID: {}", id);
+        log.info("Buscando usuario con ID: {}", id);
 
-        Usuario usuario = repository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado"));
+                        new ResourceNotFoundException(
+                                "Usuario no encontrado"
+                        )
+                );
 
-        return mapToResponse(usuario);
+        return usuarioMapper.toDTO(usuario);
     }
 
     @Override
-    public UsuarioResponseDTO actualizarUsuario(Long id, UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO obtenerUsuarioPorEmail(String email) {
 
-        log.info("Actualizando usuario ID: {}", id);
+        log.info("Buscando usuario con email: {}", email);
 
-        Usuario usuario = repository.findById(id)
+        Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado"));
+                        new ResourceNotFoundException(
+                                "Usuario no encontrado"
+                        )
+                );
 
-        usuario.setNombre(dto.getNombre());
-        usuario.setCorreo(dto.getCorreo());
-        usuario.setPassword(dto.getPassword());
-        usuario.setRol(dto.getRol());
+        return usuarioMapper.toDTO(usuario);
+    }
 
-        Usuario actualizado = repository.save(usuario);
+    @Override
+    public UsuarioResponseDTO actualizarUsuario(
+            Long id,
+            UsuarioRequestDTO request
+    ) {
 
-        log.info("Usuario actualizado ID: {}", actualizado.getId());
+        log.info("Actualizando usuario con ID: {}", id);
 
-        return mapToResponse(actualizado);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Usuario no encontrado"
+                        )
+                );
+
+        usuario.setNombre(request.getNombre());
+        usuario.setApellido(request.getApellido());
+        usuario.setEmail(request.getEmail());
+        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setEstado(request.getEstado());
+        usuario.setRol(request.getRol());
+
+        Usuario usuarioActualizado =
+                usuarioRepository.save(usuario);
+
+        log.info("Usuario actualizado correctamente");
+
+        return usuarioMapper.toDTO(usuarioActualizado);
     }
 
     @Override
     public void eliminarUsuario(Long id) {
 
-        log.info("Eliminando usuario ID: {}", id);
+        log.info("Eliminando usuario con ID: {}", id);
 
-        Usuario usuario = repository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado"));
+                        new ResourceNotFoundException(
+                                "Usuario no encontrado"
+                        )
+                );
 
-        repository.delete(usuario);
+        usuarioRepository.delete(usuario);
 
-        log.info("Usuario eliminado ID: {}", id);
+        log.info("Usuario eliminado correctamente");
     }
-
-    private UsuarioResponseDTO mapToResponse(Usuario usuario) {
-
-        return UsuarioResponseDTO.builder()
-                .id(usuario.getId())
-                .nombre(usuario.getNombre())
-                .correo(usuario.getCorreo())
-                .rol(usuario.getRol())
-                .activo(usuario.getActivo())
-                .build();
-    }
-
-    @Override
-    public UsuarioResponseDTO obtenerPorCorreo(String correo) {
-
-        log.info("Buscando usuario por correo: {}", correo);
-
-        Usuario usuario = repository.findByCorreo(correo)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado"));
-
-        return mapToResponse(usuario);
-}
 }

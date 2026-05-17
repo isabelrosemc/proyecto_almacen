@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface UsuarioService {
 
-    UsuarioResponseDTO crearUsuario(UsuarioRequestDTO dto);
+    UsuarioResponseDTO crearUsuario(UsuarioRequestDTO request);
 
     List<UsuarioResponseDTO> listarUsuarios();
 
-    UsuarioResponseDTO obtenerUsuario(Long id);
+    UsuarioResponseDTO obtenerUsuarioPorId(Long id);
 
-    UsuarioResponseDTO actualizarUsuario(Long id, UsuarioRequestDTO dto);
+    UsuarioResponseDTO obtenerUsuarioPorEmail(String email);
 
-    UsuarioResponseDTO obtenerPorCorreo(String correo);
+    UsuarioResponseDTO actualizarUsuario(Long id, UsuarioRequestDTO request);
 
     void eliminarUsuario(Long id);
 }

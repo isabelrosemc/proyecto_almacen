@@ -1,8 +1,6 @@
-package com.almacen.ms_usuarios.dto;
+package com.almacen.ms_auth.dto;
 
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,9 +17,9 @@ public class UsuarioResponseDTO {
 
     private String email;
 
+    private String password;
+
     private Boolean estado;
 
     private String rol;
-
-    private LocalDateTime fechaCreacion;
 }
