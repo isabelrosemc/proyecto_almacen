@@ -6,8 +6,10 @@ import com.almacen.ms_pagos.mapper.PagoMapper;
 import com.almacen.ms_pagos.model.Pago;
 import com.almacen.ms_pagos.repository.PagoRepository;
 import com.almacen.ms_pagos.service.PagoService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class PagoServiceImpl implements PagoService {
 
     @Override
     public List<PagoDTO> listarPagos() {
+
         return pagoRepository.findAll()
                 .stream()
                 .map(PagoMapper::toDTO)
