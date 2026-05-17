@@ -22,5 +22,5 @@ eureka:
     prefer-ip-address: true
 
 jwt:
-  secret: miclave_super_secreta_2026
+  secret: miclavesupersecretajwt2026almacenfullstack123456
   expiration: 3600000
