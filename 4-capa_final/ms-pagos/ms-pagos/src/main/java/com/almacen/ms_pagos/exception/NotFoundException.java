@@ -1,4 +1,4 @@
-package com.example.ms_pagos.exception;
+package com.almacen.ms_pagos.exception;
 
 public class NotFoundException extends RuntimeException {
 

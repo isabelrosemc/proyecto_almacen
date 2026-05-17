@@ -1,7 +1,9 @@
-package com.example.ms_pagos.mapper;
+package com.almacen.ms_pagos.mapper;
 
-import com.example.ms_pagos.dto.PagoDTO;
-import com.example.ms_pagos.model.Pago;
+import com.almacen.ms_pagos.dto.PagoDTO;
+import com.almacen.ms_pagos.model.Pago;
+
+import java.time.LocalDate;
 
 public class PagoMapper {
 
@@ -21,6 +23,7 @@ public class PagoMapper {
         pago.setMetodoPago(dto.getMetodoPago());
         pago.setEstadoPago(dto.getEstadoPago());
         pago.setIdVenta(dto.getIdVenta());
+        pago.setFechaPago(LocalDate.now());
 
         return pago;
     }

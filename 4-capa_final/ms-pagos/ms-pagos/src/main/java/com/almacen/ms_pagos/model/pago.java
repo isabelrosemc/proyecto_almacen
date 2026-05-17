@@ -1,4 +1,4 @@
-package com.example.ms_pagos.model;
+package com.almacen.ms_pagos.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,12 +18,8 @@ public class Pago {
     private Long idPago;
 
     private Double monto;
-
     private String metodoPago;
-
     private String estadoPago;
-
     private LocalDate fechaPago;
-
     private Long idVenta;
 }

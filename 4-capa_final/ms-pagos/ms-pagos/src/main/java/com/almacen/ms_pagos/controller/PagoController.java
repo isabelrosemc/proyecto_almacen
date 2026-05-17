@@ -1,8 +1,8 @@
-package com.example.ms_pagos.controller;
+package com.almacen.ms_pagos.controller;
 
-import com.example.ms_pagos.dto.PagoDTO;
-import com.example.ms_pagos.service.PagoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.almacen.ms_pagos.dto.PagoDTO;
+import com.almacen.ms_pagos.service.PagoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pagos")
+@RequiredArgsConstructor
 public class PagoController {
 
-    @Autowired
-    private PagoService service;
+    private final PagoService service;
 
     @GetMapping
     public ResponseEntity<List<PagoDTO>> listarPagos() {
@@ -40,9 +40,7 @@ public class PagoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarPago(@PathVariable Long id) {
-
         service.eliminarPago(id);
-
         return ResponseEntity.ok("Pago eliminado correctamente");
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8085
 
 spring:
   application:
@@ -12,3 +12,6 @@ jwt:
 logging:
   level:
     root: INFO
+
+usuarios:
+  url: http://localhost:8084

@@ -1,4 +1,4 @@
-package com.example.ms_pagos.dto;
+package com.almacen.ms_pagos.dto;
 
 import lombok.*;
 
@@ -9,10 +9,7 @@ import lombok.*;
 public class PagoDTO {
 
     private Double monto;
-
     private String metodoPago;
-
     private String estadoPago;
-
     private Long idVenta;
 }

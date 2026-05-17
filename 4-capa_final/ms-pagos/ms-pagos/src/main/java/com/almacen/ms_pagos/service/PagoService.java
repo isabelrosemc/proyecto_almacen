@@ -1,6 +1,6 @@
-package com.example.ms_pagos.service;
+package com.almacen.ms_pagos.service;
 
-import com.example.ms_pagos.dto.PagoDTO;
+import com.almacen.ms_pagos.dto.PagoDTO;
 
 import java.util.List;
 
