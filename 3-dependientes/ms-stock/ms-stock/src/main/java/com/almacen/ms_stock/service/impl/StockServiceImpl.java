@@ -225,4 +225,59 @@ public class StockServiceImpl implements StockService {
             );
         }
     }
+
+    @Override
+        public void descontarStock(ActualizarStockDTO request) {
+
+        log.info("Descontando stock producto ID: {}",
+                request.getProductoId());
+
+        Stock stock =
+                stockRepository
+                        .findByProductoId(
+                                request.getProductoId()
+                        )
+                        .orElseThrow(() ->
+                                new StockNotFoundException(
+                                        "Stock no encontrado"
+                                ));
+
+        if (stock.getStockActual() < request.getCantidad()) {
+
+                throw new RuntimeException(
+                        "Stock insuficiente"
+                );
+        }
+
+        stock.setStockActual(
+                stock.getStockActual() -
+                        request.getCantidad()
+        );
+
+        stockRepository.save(stock);
+
+        log.info("Stock descontado correctamente");
+        }
+
+        @Override
+        public StockResponseDTO buscarPorProductoId(Long productoId) {
+
+        log.info("Buscando stock por producto ID: {}",
+                productoId);
+
+        Stock stock =
+                stockRepository
+                        .findByProductoId(productoId)
+                        .orElseThrow(() ->
+                                new StockNotFoundException(
+                                        "Stock no encontrado"
+                                ));
+
+        ProductoDTO producto =
+                productoFeignClient.obtenerProducto(
+                        stock.getProductoId()
+                );
+
+        return StockMapper.toDTO(stock, producto);
+        }
 }

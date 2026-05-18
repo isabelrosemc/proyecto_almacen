@@ -55,6 +55,8 @@ spring:
               uri: lb://ms-auth
               predicates:
                 - Path=/api/auth/**
+              filters:
+                - RewritePath=/api/auth/(?<remaining>.*), /auth/${remaining}
 
             - id: ms-detalles-ventas
               uri: lb://ms-detalles-ventas

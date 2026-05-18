@@ -59,6 +59,23 @@ public class StockController {
         );
     }
 
+    // NUEVO ENDPOINT
+    @GetMapping("/producto/{productoId}")
+    public ResponseEntity<StockResponseDTO>
+    buscarPorProductoId(
+            @PathVariable Long productoId
+    ) {
+
+        log.info("GET /api/stock/producto/{}",
+                productoId);
+
+        return ResponseEntity.ok(
+                stockService.buscarPorProductoId(
+                        productoId
+                )
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<StockResponseDTO>
     actualizarStock(
@@ -87,5 +104,35 @@ public class StockController {
         stockService.eliminarStock(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/ingresar")
+    public ResponseEntity<Void> ingresarStock(
+
+            @RequestBody
+            ActualizarStockDTO request
+
+    ) {
+
+        log.info("PUT /api/stock/ingresar");
+
+        stockService.ingresarStock(request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/descontar")
+    public ResponseEntity<Void> descontarStock(
+
+            @RequestBody
+            ActualizarStockDTO request
+
+    ) {
+
+        log.info("PUT /api/stock/descontar");
+
+        stockService.descontarStock(request);
+
+        return ResponseEntity.ok().build();
     }
 }

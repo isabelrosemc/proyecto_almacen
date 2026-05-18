@@ -22,4 +22,8 @@ public interface StockService {
     void eliminarStock(Long id);
 
     void ingresarStock(ActualizarStockDTO request);
+
+    void descontarStock(ActualizarStockDTO request);
+
+    StockResponseDTO buscarPorProductoId(Long productoId);
 }
