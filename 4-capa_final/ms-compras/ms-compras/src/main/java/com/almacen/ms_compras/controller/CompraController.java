@@ -22,26 +22,19 @@ public class CompraController {
     private final CompraService compraService;
 
     @PostMapping
-    public ResponseEntity<CompraResponseDTO>
-    crearCompra(
-            @Valid @RequestBody
-            CompraRequestDTO request
+    public ResponseEntity<CompraResponseDTO> crearCompra(
+            @Valid @RequestBody CompraRequestDTO request
     ) {
 
         log.info("POST /api/compras");
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(
-                        compraService.crearCompra(
-                                request
-                        )
-                );
+                .body(compraService.crearCompra(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<CompraResponseDTO>>
-    listarCompras() {
+    public ResponseEntity<List<CompraResponseDTO>> listarCompras() {
 
         log.info("GET /api/compras");
 
@@ -51,8 +44,7 @@ public class CompraController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompraResponseDTO>
-    buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<CompraResponseDTO> buscarPorId(@PathVariable Long id) {
 
         log.info("GET /api/compras/{}", id);
 
