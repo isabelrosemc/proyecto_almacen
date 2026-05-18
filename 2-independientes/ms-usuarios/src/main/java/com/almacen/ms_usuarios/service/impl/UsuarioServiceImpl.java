@@ -50,7 +50,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .estado(request.getEstado())
                 .rol(request.getRol())
                 .build();
-
+                
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
         log.info("Usuario creado correctamente con ID: {}",

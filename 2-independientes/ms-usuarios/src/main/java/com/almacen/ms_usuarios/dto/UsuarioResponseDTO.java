@@ -19,9 +19,12 @@ public class UsuarioResponseDTO {
 
     private String email;
 
+    private String password;
+
     private Boolean estado;
 
     private String rol;
 
     private LocalDateTime fechaCreacion;
+    
 }

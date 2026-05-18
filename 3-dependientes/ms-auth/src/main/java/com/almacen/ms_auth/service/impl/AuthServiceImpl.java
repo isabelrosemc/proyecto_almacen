@@ -48,6 +48,12 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
+        log.info("PASSWORD REQUEST: {}",
+        request.getPassword());
+
+        log.info("PASSWORD BD: {}",
+                usuario.getPassword());
+
         if (!passwordEncoder.matches(
 
         request.getPassword(),

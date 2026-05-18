@@ -15,6 +15,7 @@ public class UsuarioMapper {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .email(usuario.getEmail())
+                .password(usuario.getPassword())
                 .estado(usuario.getEstado())
                 .rol(usuario.getRol().name())
                 .fechaCreacion(usuario.getFechaCreacion())
