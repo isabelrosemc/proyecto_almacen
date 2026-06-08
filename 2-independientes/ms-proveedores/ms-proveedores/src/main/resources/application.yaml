@@ -25,3 +25,10 @@ eureka:
 logging:
   level:
     com.ms.proveedores: DEBUG
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui.html

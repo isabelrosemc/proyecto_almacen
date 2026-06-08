@@ -23,13 +23,6 @@ spring:
     serialization:
       "[INDENT_OUTPUT]": true
 
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /doc/swagger-ui.html
-
 eureka:
   client:
     service-url:
@@ -39,3 +32,10 @@ logging:
   level:
     root: INFO
     "[com.almacen.ms_categoria]": DEBUG
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui.html
