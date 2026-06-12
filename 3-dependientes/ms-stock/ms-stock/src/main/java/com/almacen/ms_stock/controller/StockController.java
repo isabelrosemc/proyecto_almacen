@@ -3,6 +3,15 @@ package com.almacen.ms_stock.controller;
 import com.almacen.ms_stock.dto.*;
 import com.almacen.ms_stock.service.StockService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -17,15 +26,49 @@ import java.util.List;
 @RequestMapping("/api/stock")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(
+    name = "Stock",
+    description = "Operaciones relacionadas con la gestión de stock de productos"
+)
 public class StockController {
 
     private final StockService stockService;
 
     @PostMapping
-    public ResponseEntity<StockResponseDTO>
-    crearStock(
-            @Valid @RequestBody
-            StockRequestDTO request
+    @Operation(
+        summary = "Crear registro de stock",
+        description = "Registra el stock inicial de un producto"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Stock creado correctamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = StockResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "Stock Creado",
+                    value = """
+                    {
+                      "id": 1,
+                      "productoId": 1,
+                      "cantidad": 100
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos de entrada inválidos"
+        )
+    })
+    public ResponseEntity<StockResponseDTO> crearStock(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Datos necesarios para crear el registro de stock",
+                required = true
+            )
+            @Valid @RequestBody StockRequestDTO request
     ) {
 
         log.info("POST /api/stock");
@@ -38,8 +81,21 @@ public class StockController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StockResponseDTO>>
-    listarStock() {
+    @Operation(
+        summary = "Listar stock",
+        description = "Obtiene todos los registros de stock almacenados"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Listado obtenido correctamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = StockResponseDTO.class)
+            )
+        )
+    })
+    public ResponseEntity<List<StockResponseDTO>> listarStock() {
 
         log.info("GET /api/stock");
 
@@ -49,8 +105,32 @@ public class StockController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StockResponseDTO>
-    buscarPorId(@PathVariable Long id) {
+    @Operation(
+        summary = "Buscar stock por ID",
+        description = "Obtiene un registro de stock mediante su identificador"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Registro encontrado",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = StockResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Registro no encontrado"
+        )
+    })
+    public ResponseEntity<StockResponseDTO> buscarPorId(
+            @Parameter(
+                description = "ID del registro de stock",
+                required = true,
+                example = "1"
+            )
+            @PathVariable Long id
+    ) {
 
         log.info("GET /api/stock/{}", id);
 
@@ -59,15 +139,35 @@ public class StockController {
         );
     }
 
-    // NUEVO ENDPOINT
     @GetMapping("/producto/{productoId}")
-    public ResponseEntity<StockResponseDTO>
-    buscarPorProductoId(
+    @Operation(
+        summary = "Buscar stock por producto",
+        description = "Obtiene el stock asociado a un producto específico"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Stock encontrado",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = StockResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "No existe stock asociado al producto"
+        )
+    })
+    public ResponseEntity<StockResponseDTO> buscarPorProductoId(
+            @Parameter(
+                description = "ID del producto",
+                required = true,
+                example = "1"
+            )
             @PathVariable Long productoId
     ) {
 
-        log.info("GET /api/stock/producto/{}",
-                productoId);
+        log.info("GET /api/stock/producto/{}", productoId);
 
         return ResponseEntity.ok(
                 stockService.buscarPorProductoId(
@@ -77,12 +177,41 @@ public class StockController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StockResponseDTO>
-    actualizarStock(
+    @Operation(
+        summary = "Actualizar stock",
+        description = "Actualiza la información de un registro de stock existente"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Stock actualizado correctamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = StockResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Registro no encontrado"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos inválidos"
+        )
+    })
+    public ResponseEntity<StockResponseDTO> actualizarStock(
+            @Parameter(
+                description = "ID del registro de stock",
+                required = true,
+                example = "1"
+            )
             @PathVariable Long id,
 
-            @Valid @RequestBody
-            StockRequestDTO request
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Datos actualizados del stock",
+                required = true
+            )
+            @Valid @RequestBody StockRequestDTO request
     ) {
 
         log.info("PUT /api/stock/{}", id);
@@ -96,8 +225,28 @@ public class StockController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void>
-    eliminarStock(@PathVariable Long id) {
+    @Operation(
+        summary = "Eliminar stock",
+        description = "Elimina un registro de stock mediante su identificador"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "204",
+            description = "Registro eliminado correctamente"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Registro no encontrado"
+        )
+    })
+    public ResponseEntity<Void> eliminarStock(
+            @Parameter(
+                description = "ID del registro a eliminar",
+                required = true,
+                example = "1"
+            )
+            @PathVariable Long id
+    ) {
 
         log.info("DELETE /api/stock/{}", id);
 
@@ -107,10 +256,31 @@ public class StockController {
     }
 
     @PutMapping("/ingresar")
+    @Operation(
+        summary = "Ingresar stock",
+        description = "Incrementa la cantidad disponible de stock para un producto"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Stock ingresado correctamente"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Solicitud inválida"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Producto o stock no encontrado"
+        )
+    })
     public ResponseEntity<Void> ingresarStock(
 
-            @RequestBody
-            ActualizarStockDTO request
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Datos para incrementar el stock",
+                required = true
+            )
+            @RequestBody ActualizarStockDTO request
 
     ) {
 
@@ -122,10 +292,31 @@ public class StockController {
     }
 
     @PutMapping("/descontar")
+    @Operation(
+        summary = "Descontar stock",
+        description = "Reduce la cantidad disponible de stock para un producto"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Stock descontado correctamente"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Cantidad inválida o stock insuficiente"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Producto o stock no encontrado"
+        )
+    })
     public ResponseEntity<Void> descontarStock(
 
-            @RequestBody
-            ActualizarStockDTO request
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Datos para descontar stock",
+                required = true
+            )
+            @RequestBody ActualizarStockDTO request
 
     ) {
 

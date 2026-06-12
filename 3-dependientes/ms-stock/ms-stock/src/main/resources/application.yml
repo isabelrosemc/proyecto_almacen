@@ -29,3 +29,10 @@ eureka:
 logging:
   level:
     com.almacen.ms_stock: DEBUG
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui.html
