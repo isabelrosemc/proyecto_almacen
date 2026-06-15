@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ventaDTO {
+public class VentaDTO {
 
     private Long idVenta;
 
