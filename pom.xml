@@ -29,8 +29,8 @@
     </properties>
 
     <modules>
-        <module>infraestructura/api-gateway</module>
-        <module>infraestructura/eureka-server</module>
+        <module>1-infraestructura/api-gateway</module>
+        <module>1-infraestructura/eureka-server</module>
 
         <module>independientes/ms-categoria</module>
         <module>independientes/ms-clientes</module>

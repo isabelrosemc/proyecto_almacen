@@ -9,7 +9,7 @@
         <groupId>com.almacen</groupId>
         <artifactId>proyecto-padre</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <artifactId>api-gateway</artifactId>
