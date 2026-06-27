@@ -15,36 +15,34 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
 
     <properties>
         <java.version>17</java.version>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <spring-cloud.version>2025.0.2</spring-cloud.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
     </properties>
 
     <modules>
         <module>1-infraestructura/api-gateway</module>
         <module>1-infraestructura/eureka-server</module>
 
-        <module>independientes/ms-categoria</module>
-        <module>independientes/ms-clientes</module>
-        <module>independientes/ms-proveedores</module>
-        <module>independientes/ms-usuarios</module>
+        <module>2-independientes/ms-categoria</module>
+        <module>2-independientes/ms-clientes</module>
+        <module>2-independientes/ms-proveedores</module>
+        <module>2-independientes/ms-usuarios</module>
 
-        <module>dependientes/ms-auth</module>
-        <module>dependientes/ms-productos</module>
-        <module>dependientes/ms-stock</module>
+        <module>3-dependientes/ms-auth</module>
+        <module>3-dependientes/ms-productos</module>
+        <module>3-dependientes/ms-stock</module>
 
-        <module>capa_final/ms-compras</module>
-        <module>capa_final/ms-pagos</module>
-        <module>capa_final/ms-reportes</module>
-        <module>capa_final/ms-ventas</module>
+        <module>4-capa_final/ms-compras</module>
+        <module>4-capa_final/ms-pagos</module>
+        <module>4-capa_final/ms-reportes</module>
+        <module>4-capa_final/ms-ventas</module>
     </modules>
 
     <dependencyManagement>
@@ -58,5 +56,35 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--
+        FIX GLOBAL: Lombok annotation processor registrado en maven-compiler-plugin.
+        Con spring-boot-starter-parent 3.4.1 + Java 17, el annotation processor
+        de Lombok DEBE declararse en annotationProcessorPaths para que procese
+        @Slf4j, @Builder, @Getter, @Setter, etc.  Sin esto el compilador no
+        genera los métodos y aparecen: "cannot find symbol: variable log",
+        "cannot find symbol: builder()", "cannot find symbol: getNombre()", etc.
+    -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>

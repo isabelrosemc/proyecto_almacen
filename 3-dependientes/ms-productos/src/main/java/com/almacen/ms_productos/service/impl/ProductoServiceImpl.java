@@ -1,0 +1,220 @@
+package com.almacen.ms_productos.service.impl;
+
+import com.almacen.ms_productos.client.*;
+import com.almacen.ms_productos.dto.*;
+import com.almacen.ms_productos.exception.*;
+import com.almacen.ms_productos.mapper.ProductoMapper;
+import com.almacen.ms_productos.model.Producto;
+import com.almacen.ms_productos.repository.ProductoRepository;
+import com.almacen.ms_productos.service.ProductoService;
+
+import feign.FeignException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ProductoServiceImpl
+        implements ProductoService {
+
+    private final ProductoRepository productoRepository;
+
+    private final CategoriaFeignClient categoriaFeignClient;
+
+    private final ProveedorFeignClient proveedorFeignClient;
+
+    @Override
+    public ProductoResponseDTO crearProducto(
+            ProductoRequestDTO request
+    ) {
+
+        log.info("Creando producto SKU: {}",
+                request.getSku());
+
+        boolean existe =
+                productoRepository.existsBySku(
+                        request.getSku()
+                );
+
+        if (existe) {
+
+            throw new DuplicateProductoException(
+                    "El SKU ya existe"
+            );
+        }
+
+        CategoriaDTO categoria;
+        ProveedorDTO proveedor;
+
+        try {
+
+            categoria =
+                    categoriaFeignClient.obtenerCategoria(
+                            request.getCategoriaId()
+                    );
+
+        } catch (FeignException.NotFound ex) {
+
+            throw new RemoteServiceException(
+                    "Categoria no encontrada"
+            );
+        }
+
+        try {
+
+            proveedor =
+                    proveedorFeignClient.obtenerProveedor(
+                            request.getProveedorId()
+                    );
+
+        } catch (FeignException.NotFound ex) {
+
+            throw new RemoteServiceException(
+                    "Proveedor no encontrado"
+            );
+        }
+
+        Producto producto =
+                ProductoMapper.toEntity(request);
+
+        Producto guardado =
+                productoRepository.save(producto);
+
+        log.info("Producto creado correctamente ID: {}",
+                guardado.getId());
+
+        return ProductoMapper.toDTO(
+                guardado,
+                categoria,
+                proveedor
+        );
+    }
+
+    @Override
+    public List<ProductoResponseDTO> listarProductos() {
+
+        log.info("Listando productos");
+
+        return productoRepository.findAll()
+                .stream()
+                .map(producto -> {
+
+                    CategoriaDTO categoria =
+                            categoriaFeignClient
+                                    .obtenerCategoria(
+                                            producto.getCategoriaId()
+                                    );
+
+                    ProveedorDTO proveedor =
+                            proveedorFeignClient
+                                    .obtenerProveedor(
+                                            producto.getProveedorId()
+                                    );
+
+                    return ProductoMapper.toDTO(
+                            producto,
+                            categoria,
+                            proveedor
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductoResponseDTO buscarPorId(Long id) {
+
+        log.info("Buscando producto ID: {}", id);
+
+        Producto producto =
+                productoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ProductoNotFoundException(
+                                        "Producto no encontrado"
+                                ));
+
+        CategoriaDTO categoria =
+                categoriaFeignClient.obtenerCategoria(
+                        producto.getCategoriaId()
+                );
+
+        ProveedorDTO proveedor =
+                proveedorFeignClient.obtenerProveedor(
+                        producto.getProveedorId()
+                );
+
+        return ProductoMapper.toDTO(
+                producto,
+                categoria,
+                proveedor
+        );
+    }
+
+    @Override
+    public ProductoResponseDTO actualizarProducto(
+            Long id,
+            ProductoRequestDTO request
+    ) {
+
+        log.info("Actualizando producto ID: {}", id);
+
+        Producto producto =
+                productoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ProductoNotFoundException(
+                                        "Producto no encontrado"
+                                ));
+
+        producto.setNombre(request.getNombre());
+        producto.setDescripcion(request.getDescripcion());
+        producto.setSku(request.getSku());
+        producto.setPrecio(request.getPrecio());
+        producto.setCategoriaId(request.getCategoriaId());
+        producto.setProveedorId(request.getProveedorId());
+        producto.setEstado(request.getEstado());
+
+        Producto actualizado =
+                productoRepository.save(producto);
+
+        CategoriaDTO categoria =
+                categoriaFeignClient.obtenerCategoria(
+                        actualizado.getCategoriaId()
+                );
+
+        ProveedorDTO proveedor =
+                proveedorFeignClient.obtenerProveedor(
+                        actualizado.getProveedorId()
+                );
+
+        log.info("Producto actualizado correctamente");
+
+        return ProductoMapper.toDTO(
+                actualizado,
+                categoria,
+                proveedor
+        );
+    }
+
+    @Override
+    public void eliminarProducto(Long id) {
+
+        log.info("Eliminando producto ID: {}", id);
+
+        Producto producto =
+                productoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ProductoNotFoundException(
+                                        "Producto no encontrado"
+                                ));
+
+        productoRepository.delete(producto);
+
+        log.info("Producto eliminado correctamente");
+    }
+}
