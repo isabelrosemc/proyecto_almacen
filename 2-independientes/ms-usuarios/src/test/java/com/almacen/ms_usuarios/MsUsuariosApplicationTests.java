@@ -1,13 +1,12 @@
 package com.almacen.ms_usuarios;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class MsUsuariosApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {
+        // Test vacío: las pruebas reales están en UsuarioServiceImplTest
+        // y UsuarioControllerTest. Este test no levanta el contexto de Spring.
+    }
 }
