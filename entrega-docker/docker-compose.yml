@@ -1,0 +1,258 @@
+version: "3.8"
+
+services:
+  mysql-db:
+    image: mysql:8.4
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - data_db:/var/lib/mysql
+      - ./initdb/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  eureka-server:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: eureka-server
+    volumes:
+      - ./apps/eureka-server-1.0.0-SNAPSHOT.jar:/app/eureka-server.jar
+    command: java -jar /app/eureka-server.jar
+    ports:
+      - "8761:8761"
+
+  ms-categoria:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-categoria
+    volumes:
+      - ./apps/ms-categoria-1.0.0-SNAPSHOT.jar:/app/ms-categoria.jar
+    command: java -jar /app/ms-categoria.jar
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/categorias_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-clientes:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-clientes
+    volumes:
+      - ./apps/ms-clientes-1.0.0-SNAPSHOT.jar:/app/ms-clientes.jar
+    command: java -jar /app/ms-clientes.jar
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/clientes_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-proveedores:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-proveedores
+    volumes:
+      - ./apps/ms-proveedores-1.0.0-SNAPSHOT.jar:/app/ms-proveedores.jar
+    command: java -jar /app/ms-proveedores.jar
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/proveedores_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-usuarios:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-usuarios
+    volumes:
+      - ./apps/ms-usuarios-1.0.0-SNAPSHOT.jar:/app/ms-usuarios.jar
+    command: java -jar /app/ms-usuarios.jar
+    ports:
+      - "8084:8084"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/usuarios_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-auth:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-auth
+    volumes:
+      - ./apps/ms-auth-1.0.0-SNAPSHOT.jar:/app/ms-auth.jar
+    command: java -jar /app/ms-auth.jar
+    ports:
+      - "8085:8085"
+    depends_on:
+      eureka-server:
+        condition: service_started
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-productos:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-productos
+    volumes:
+      - ./apps/ms-productos-1.0.0-SNAPSHOT.jar:/app/ms-productos.jar
+    command: java -jar /app/ms-productos.jar
+    ports:
+      - "8086:8086"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/productos_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-stock:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-stock
+    volumes:
+      - ./apps/ms-stock-1.0.0-SNAPSHOT.jar:/app/ms-stock.jar
+    command: java -jar /app/ms-stock.jar
+    ports:
+      - "8087:8087"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/stock_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-compras:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-compras
+    volumes:
+      - ./apps/ms-compras-1.0.0-SNAPSHOT.jar:/app/ms-compras.jar
+    command: java -jar /app/ms-compras.jar
+    ports:
+      - "8088:8088"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/compras_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-pagos:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-pagos
+    volumes:
+      - ./apps/ms-pagos-1.0.0-SNAPSHOT.jar:/app/ms-pagos.jar
+    command: java -jar /app/ms-pagos.jar
+    ports:
+      - "8091:8091"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/pagos_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-ventas:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-ventas
+    volumes:
+      - ./apps/ms-ventas-1.0.0-SNAPSHOT.jar:/app/ms-ventas.jar
+    command: java -jar /app/ms-ventas.jar
+    ports:
+      - "8092:8092"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ventas_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  ms-reportes:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: ms-reportes
+    volumes:
+      - ./apps/ms-reportes-1.0.0-SNAPSHOT.jar:/app/ms-reportes.jar
+    command: java -jar /app/ms-reportes.jar
+    ports:
+      - "8093:8093"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/reportes_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  api-gateway:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: api-gateway
+    volumes:
+      - ./apps/api-gateway-1.0.0-SNAPSHOT.jar:/app/api-gateway.jar
+    command: java -jar /app/api-gateway.jar
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - ms-categoria
+      - ms-clientes
+      - ms-proveedores
+      - ms-usuarios
+      - ms-auth
+      - ms-productos
+      - ms-stock
+      - ms-compras
+      - ms-pagos
+      - ms-ventas
+      - ms-reportes
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+volumes:
+  data_db:
